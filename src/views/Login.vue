@@ -1,0 +1,69 @@
+<template>
+  <div class="loginPage">
+    <a-form-model class="loginForm" :model="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+      <a-form-model-item label="账号">
+        <a-input v-model="form.account" />
+      </a-form-model-item>
+      <a-form-model-item label="密码">
+        <a-input v-model="form.password" />
+      </a-form-model-item>
+      <a-form-model-item label="注册身份">
+        <a-radio-group v-model="form.position">
+          <a-radio value="plat">平台管理员</a-radio>
+          <a-radio value="shop">门店管理员</a-radio>
+        </a-radio-group>
+      </a-form-model-item>
+      <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+        <a-button type="primary" @click="onSubmit">Create</a-button>
+        <a-button style="margin-left: 10px;">Cancel</a-button>
+        <router-link to="/registe" style="margin-left: 10px;">去注册</router-link>
+      </a-form-model-item>
+    </a-form-model>
+  </div>
+</template>
+
+<script>
+import adminService from '../service/admin'
+export default {
+  data(){
+    return{
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
+      form: {
+        account: "", // 账号
+        password: "", // 密码
+        position: "plat" // 职位（平台管理员/门店管理员） plat / shop
+      },
+    }
+  },
+  methods:{
+    async onSubmit(){
+      const data = await adminService.login(this.form)
+      this.$message.info(data.msg, 0.7)
+      if(data.statu){
+        const {token, _id, position, name} = data
+        window.localStorage['_k'] = token
+        const { account} = this.form
+        const admininfo = {
+          _id, position, name, account
+        }
+        window.localStorage['admininfo'] = JSON.stringify(admininfo)
+        this.$router.push({name: 'Info'})
+      }
+    }
+  }
+}
+</script>
+
+<style  scoped>
+.loginPage{
+  display:flex;
+  width: 100%;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+.loginForm{
+  width: 45%;
+}
+</style>
