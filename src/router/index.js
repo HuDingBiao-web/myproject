@@ -60,7 +60,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       if (!window.localStorage['_k']) {
         notification.open({
-          message: '抱歉~',
+          message: '抱歉哦~',
           description: '当前您没有权限访问，请登录',
         })
         next('/')
